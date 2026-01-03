@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
-import { PublicKey, Transaction, VersionedTransaction, Connection, clusterApiUrl } from '@solana/web3.js';
 import {
-  transact,
-  Web3MobileWallet,
-} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+  PublicKey,
+  Transaction,
+  VersionedTransaction,
+  Connection,
+  clusterApiUrl,
+} from '@solana/web3.js';
+import { transact, Web3MobileWallet } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 
 import { APP_CONFIG } from '@/constants/config';
 
@@ -222,9 +225,7 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
 
       const signedTx = await signTransaction(transaction);
       const signature = await connection.sendRawTransaction(
-        signedTx instanceof VersionedTransaction
-          ? signedTx.serialize()
-          : signedTx.serialize()
+        signedTx instanceof VersionedTransaction ? signedTx.serialize() : signedTx.serialize()
       );
 
       await connection.confirmTransaction({
@@ -265,11 +266,7 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
     ]
   );
 
-  return (
-    <SolanaContext.Provider value={contextValue}>
-      {children}
-    </SolanaContext.Provider>
-  );
+  return <SolanaContext.Provider value={contextValue}>{children}</SolanaContext.Provider>;
 }
 
 export function useSolana() {

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
-  Image,
   Pressable,
   AccessibilityInfo,
 } from 'react-native';
@@ -27,7 +26,7 @@ export function HomeScreen() {
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     // Refresh data here
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setRefreshing(false);
   }, []);
 
@@ -35,7 +34,7 @@ export function HomeScreen() {
     try {
       await connect();
       AccessibilityInfo.announceForAccessibility('Portefeuille connecté avec succès');
-    } catch (error) {
+    } catch {
       AccessibilityInfo.announceForAccessibility('Échec de la connexion au portefeuille');
     }
   };
@@ -64,10 +63,7 @@ export function HomeScreen() {
           >
             Bienvenue sur
           </Text>
-          <Text
-            style={[styles.title, { color: theme.colors.text }]}
-            accessibilityRole="header"
-          >
+          <Text style={[styles.title, { color: theme.colors.text }]} accessibilityRole="header">
             ASDF Ecosystem
           </Text>
         </View>
@@ -85,9 +81,7 @@ export function HomeScreen() {
           <View>
             <View style={styles.connectedHeader}>
               <Ionicons name="checkmark-circle" size={24} color={theme.colors.success} />
-              <Text style={[styles.connectedText, { color: theme.colors.success }]}>
-                Connecté
-              </Text>
+              <Text style={[styles.connectedText, { color: theme.colors.success }]}>Connecté</Text>
             </View>
             <Text
               style={[styles.addressText, { color: theme.colors.textSecondary }]}
@@ -115,10 +109,7 @@ export function HomeScreen() {
       </Card>
 
       {/* Quick Actions */}
-      <Text
-        style={[styles.sectionTitle, { color: theme.colors.text }]}
-        accessibilityRole="header"
-      >
+      <Text style={[styles.sectionTitle, { color: theme.colors.text }]} accessibilityRole="header">
         Actions rapides
       </Text>
       <View style={styles.actionsGrid}>

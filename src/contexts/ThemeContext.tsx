@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode, useEffect } from 'react';
-import { useColorScheme, Appearance } from 'react-native';
+import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
+import { useColorScheme } from 'react-native';
 
 // Theme color palette - matches ASDF brand
 const colors = {
@@ -127,11 +127,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     [theme]
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

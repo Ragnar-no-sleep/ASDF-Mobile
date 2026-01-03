@@ -17,7 +17,12 @@ interface ScreenHeaderProps {
   subtitle?: string;
 }
 
-export function ScreenHeader({ title, showBack = false, rightAction, subtitle }: ScreenHeaderProps) {
+export function ScreenHeader({
+  title,
+  showBack = false,
+  rightAction,
+  subtitle,
+}: ScreenHeaderProps) {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const navigation = useNavigation();
@@ -50,10 +55,7 @@ export function ScreenHeader({ title, showBack = false, rightAction, subtitle }:
             {title}
           </Text>
           {subtitle && (
-            <Text
-              style={[styles.subtitle, { color: theme.colors.textMuted }]}
-              numberOfLines={1}
-            >
+            <Text style={[styles.subtitle, { color: theme.colors.textMuted }]} numberOfLines={1}>
               {subtitle}
             </Text>
           )}

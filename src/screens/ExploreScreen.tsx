@@ -93,9 +93,7 @@ export function ExploreScreen() {
 
       {/* Features Grid */}
       <View style={styles.featuresSection}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-          Fonctionnalités
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Fonctionnalités</Text>
         <View style={styles.featuresGrid}>
           {features.map((feature) => (
             <FeatureCard key={feature.id} feature={feature} />
@@ -105,24 +103,14 @@ export function ExploreScreen() {
 
       {/* External Links */}
       <View style={styles.linksSection}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-          Liens utiles
-        </Text>
-        <ExternalLink
-          icon="globe-outline"
-          title="Site Web"
-          url={APP_CONFIG.WEB_APP_URL}
-        />
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Liens utiles</Text>
+        <ExternalLink icon="globe-outline" title="Site Web" url={APP_CONFIG.WEB_APP_URL} />
         <ExternalLink
           icon="logo-twitter"
           title="Twitter"
           url="https://twitter.com/asdf_ecosystem"
         />
-        <ExternalLink
-          icon="logo-discord"
-          title="Discord"
-          url="https://discord.gg/asdf"
-        />
+        <ExternalLink icon="logo-discord" title="Discord" url="https://discord.gg/asdf" />
       </View>
     </ScrollView>
   );
@@ -151,9 +139,7 @@ function FeatureCard({ feature }: { feature: FeatureItem }) {
       <View style={[styles.featureIcon, { backgroundColor: theme.colors.primary + '20' }]}>
         <Ionicons name={feature.icon} size={24} color={theme.colors.primary} />
       </View>
-      <Text style={[styles.featureTitle, { color: theme.colors.text }]}>
-        {feature.title}
-      </Text>
+      <Text style={[styles.featureTitle, { color: theme.colors.text }]}>{feature.title}</Text>
       <Text style={[styles.featureDesc, { color: theme.colors.textMuted }]} numberOfLines={2}>
         {feature.description}
       </Text>
@@ -161,7 +147,15 @@ function FeatureCard({ feature }: { feature: FeatureItem }) {
   );
 }
 
-function ExternalLink({ icon, title, url }: { icon: keyof typeof Ionicons.glyphMap; title: string; url: string }) {
+function ExternalLink({
+  icon,
+  title,
+  url,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  title: string;
+  url: string;
+}) {
   const { theme } = useTheme();
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Application from 'expo-application';
@@ -20,20 +20,16 @@ export function SettingsScreen() {
   };
 
   const handleDisconnect = () => {
-    Alert.alert(
-      'Déconnexion',
-      'Voulez-vous vraiment déconnecter votre portefeuille ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        { text: 'Déconnecter', style: 'destructive', onPress: disconnect },
-      ]
-    );
+    Alert.alert('Déconnexion', 'Voulez-vous vraiment déconnecter votre portefeuille ?', [
+      { text: 'Annuler', style: 'cancel' },
+      { text: 'Déconnecter', style: 'destructive', onPress: disconnect },
+    ]);
   };
 
   const handleClearCache = () => {
     Alert.alert(
       'Vider le cache',
-      'Cette action supprimera les données temporaires de l\'application.',
+      "Cette action supprimera les données temporaires de l'application.",
       [
         { text: 'Annuler', style: 'cancel' },
         { text: 'Vider', onPress: () => {} },
@@ -51,9 +47,7 @@ export function SettingsScreen() {
       {/* Account Section */}
       {wallet.isConnected && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-            COMPTE
-          </Text>
+          <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>COMPTE</Text>
           <Card>
             <View style={styles.accountInfo}>
               <View style={[styles.accountIcon, { backgroundColor: theme.colors.primary }]}>
@@ -73,14 +67,15 @@ export function SettingsScreen() {
               </View>
             </View>
             <Pressable
-              style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}
+              style={[
+                styles.settingRow,
+                { borderTopColor: theme.colors.border, borderTopWidth: 1 },
+              ]}
               onPress={handleDisconnect}
               accessibilityRole="button"
               accessibilityLabel="Déconnecter le portefeuille"
             >
-              <Text style={[styles.settingLabel, { color: theme.colors.error }]}>
-                Déconnecter
-              </Text>
+              <Text style={[styles.settingLabel, { color: theme.colors.error }]}>Déconnecter</Text>
               <Ionicons name="log-out-outline" size={20} color={theme.colors.error} />
             </Pressable>
           </Card>
@@ -89,9 +84,7 @@ export function SettingsScreen() {
 
       {/* Appearance Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-          APPARENCE
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>APPARENCE</Text>
         <Card>
           <Text style={[styles.themeLabel, { color: theme.colors.text }]}>Thème</Text>
           <View style={styles.themeOptions}>
@@ -119,19 +112,17 @@ export function SettingsScreen() {
 
       {/* Network Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-          RÉSEAU
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>RÉSEAU</Text>
         <Card>
           <View style={styles.settingRow}>
-            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-              Réseau Solana
-            </Text>
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>Réseau Solana</Text>
             <Text style={[styles.settingValue, { color: theme.colors.primary }]}>
               {APP_CONFIG.SOLANA_NETWORK}
             </Text>
           </View>
-          <View style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}>
+          <View
+            style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}
+          >
             <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
               Point de terminaison RPC
             </Text>
@@ -147,18 +138,14 @@ export function SettingsScreen() {
 
       {/* Storage Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-          STOCKAGE
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>STOCKAGE</Text>
         <Card>
           <Pressable
             style={styles.settingRow}
             onPress={handleClearCache}
             accessibilityRole="button"
           >
-            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-              Vider le cache
-            </Text>
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>Vider le cache</Text>
             <Ionicons name="trash-outline" size={20} color={theme.colors.textMuted} />
           </Pressable>
         </Card>
@@ -166,30 +153,26 @@ export function SettingsScreen() {
 
       {/* About Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-          À PROPOS
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>À PROPOS</Text>
         <Card>
           <View style={styles.settingRow}>
-            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-              Version
-            </Text>
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>Version</Text>
             <Text style={[styles.settingValue, { color: theme.colors.textMuted }]}>
               {APP_CONFIG.VERSION}
             </Text>
           </View>
-          <View style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}>
-            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-              Variante
-            </Text>
+          <View
+            style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}
+          >
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>Variante</Text>
             <Text style={[styles.settingValue, { color: theme.colors.textMuted }]}>
               {IS_DAPP_STORE ? 'ASDF-Dapp' : 'ASDF-Android'}
             </Text>
           </View>
-          <View style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}>
-            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-              Build
-            </Text>
+          <View
+            style={[styles.settingRow, { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}
+          >
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>Build</Text>
             <Text style={[styles.settingValue, { color: theme.colors.textMuted }]}>
               {Application.nativeBuildVersion || 'dev'}
             </Text>
@@ -200,9 +183,7 @@ export function SettingsScreen() {
       {/* Debug Section (dev only) */}
       {IS_DEV && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.warning }]}>
-            DEBUG
-          </Text>
+          <Text style={[styles.sectionTitle, { color: theme.colors.warning }]}>DEBUG</Text>
           <Card>
             <View style={styles.settingRow}>
               <Text style={[styles.settingLabel, { color: theme.colors.text }]}>

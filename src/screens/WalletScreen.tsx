@@ -6,7 +6,6 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
-  FlatList,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
@@ -54,7 +53,7 @@ export function WalletScreen() {
     // TODO: Implement token fetching with getTokenAccountsByOwner
     // For now, just show SOL
     setTokens([]);
-  }, [wallet.publicKey, connection]);
+  }, [wallet.publicKey]);
 
   useEffect(() => {
     if (wallet.isConnected) {
@@ -154,9 +153,7 @@ export function WalletScreen() {
 
       {/* Address */}
       <Card style={styles.addressCard}>
-        <Text style={[styles.addressLabel, { color: theme.colors.textSecondary }]}>
-          Adresse
-        </Text>
+        <Text style={[styles.addressLabel, { color: theme.colors.textSecondary }]}>Adresse</Text>
         <Text
           style={[styles.addressValue, { color: theme.colors.text }]}
           numberOfLines={1}
@@ -169,9 +166,7 @@ export function WalletScreen() {
 
       {/* Tokens Section */}
       <View style={styles.tokensSection}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-          Tokens
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Tokens</Text>
         {tokens.length === 0 ? (
           <Card>
             <Text style={[styles.noTokensText, { color: theme.colors.textMuted }]}>
@@ -179,9 +174,7 @@ export function WalletScreen() {
             </Text>
           </Card>
         ) : (
-          tokens.map((token) => (
-            <TokenRow key={token.mint} token={token} />
-          ))
+          tokens.map((token) => <TokenRow key={token.mint} token={token} />)
         )}
       </View>
     </ScrollView>
@@ -198,12 +191,8 @@ function TokenRow({ token }: { token: TokenBalance }) {
           <Text style={{ color: theme.colors.text }}>{token.symbol[0]}</Text>
         </View>
         <View>
-          <Text style={[styles.tokenSymbol, { color: theme.colors.text }]}>
-            {token.symbol}
-          </Text>
-          <Text style={[styles.tokenName, { color: theme.colors.textMuted }]}>
-            {token.name}
-          </Text>
+          <Text style={[styles.tokenSymbol, { color: theme.colors.text }]}>{token.symbol}</Text>
+          <Text style={[styles.tokenName, { color: theme.colors.textMuted }]}>{token.name}</Text>
         </View>
       </View>
       <View style={styles.tokenBalance}>

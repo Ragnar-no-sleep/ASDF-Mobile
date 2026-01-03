@@ -103,7 +103,7 @@ function MainTabs() {
         component={SettingsScreen}
         options={{
           tabBarLabel: 'Paramètres',
-          tabBarAccessibilityLabel: 'Paramètres de l\'application',
+          tabBarAccessibilityLabel: "Paramètres de l'application",
         }}
       />
     </Tab.Navigator>
