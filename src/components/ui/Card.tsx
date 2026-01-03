@@ -5,7 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 interface CardProps {
   children: ReactNode;
-  style?: ViewStyle;
+  style?: ViewStyle | ViewStyle[];
   onPress?: () => void;
   elevated?: boolean;
   noPadding?: boolean;

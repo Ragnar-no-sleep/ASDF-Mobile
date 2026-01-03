@@ -67,7 +67,6 @@ export function HomeScreen() {
           <Text
             style={[styles.title, { color: theme.colors.text }]}
             accessibilityRole="header"
-            accessibilityLevel={1}
           >
             ASDF Ecosystem
           </Text>
@@ -119,7 +118,6 @@ export function HomeScreen() {
       <Text
         style={[styles.sectionTitle, { color: theme.colors.text }]}
         accessibilityRole="header"
-        accessibilityLevel={2}
       >
         Actions rapides
       </Text>
