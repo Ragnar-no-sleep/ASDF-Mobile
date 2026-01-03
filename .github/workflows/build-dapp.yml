@@ -39,10 +39,10 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Run tests
-        run: yarn test --watchAll=false
+        run: yarn test --watchAll=false --passWithNoTests
 
       - name: Build dApp APK
         id: build

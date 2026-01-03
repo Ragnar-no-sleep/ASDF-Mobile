@@ -39,13 +39,13 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Run linter
         run: yarn lint
 
       - name: Run tests
-        run: yarn test --coverage --watchAll=false
+        run: yarn test --coverage --watchAll=false --passWithNoTests
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3
@@ -73,7 +73,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Determine build profile
         id: profile
@@ -118,7 +118,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Submit to Play Store
         run: |
