@@ -1,0 +1,109 @@
+# Solana dApp Store Configuration
+# Documentation: https://docs.solanamobile.com/dapp-publishing/overview
+# Note: Ce fichier est une référence. Le CLI officiel génère son propre format.
+
+publisher:
+  name: "ASDF Ecosystem"
+  website: "https://asdf-web.onrender.com"
+  contact: "contact@asdf-ecosystem.com"
+
+app:
+  name: "ASDF"
+  package_name: "com.asdf.mobile"
+
+  # Short description (max 80 chars)
+  short_description: "Solana wallet integration & DeFi tools for ASDF ecosystem"
+
+  # Long description
+  long_description: |
+    ASDF is your gateway to the ASDF ecosystem on Solana.
+
+    Features:
+    - Connect with Phantom, Solflare, and other MWA-compatible wallets
+    - View your SOL balance and SPL tokens
+    - Secure transaction signing via Mobile Wallet Adapter 2.0
+    - Explore DeFi opportunities in the ASDF ecosystem
+
+    Security First:
+    - Your private keys never leave your wallet
+    - All signatures via Mobile Wallet Adapter protocol
+    - No sensitive data stored in the app
+
+    Built with the latest Solana Mobile Stack technologies.
+
+  # Category (choose from: DeFi, NFT, Games, Social, Tools, Other)
+  category: "DeFi"
+
+  # Keywords for search (max 6)
+  keywords:
+    - solana
+    - defi
+    - wallet
+    - mobile
+    - crypto
+    - mwa
+
+release:
+  # Semantic versioning
+  version: "1.0.0"
+  version_code: 1
+
+  # Release notes for this version
+  release_notes: |
+    Initial release of ASDF
+    - Mobile Wallet Adapter 2.0 integration
+    - SOL balance viewing
+    - Wallet connection persistence
+    - Support for Versioned Transactions
+
+  # Minimum Android version (API level 31 = Android 12)
+  min_sdk_version: 31
+
+  # Testing instructions for reviewers
+  testing_instructions: |
+    Prerequisites:
+    - Install a MWA-compatible wallet (Phantom or Solflare recommended)
+    - Have some SOL in your wallet for testing
+
+    Test Steps:
+    1. Open ASDF and tap "Connect Wallet"
+    2. Approve the connection request in your wallet app
+    3. Verify your SOL balance is displayed correctly
+    4. Close and reopen the app - verify session is restored
+    5. Test disconnect functionality
+
+# Legal URLs (REQUIRED for dApp Store)
+legal:
+  privacy_policy_url: "https://asdf-web.onrender.com/privacy.html"
+  # terms_of_service_url: "https://asdf-web.onrender.com/terms"  # Optional
+  # support_url: "https://asdf-web.onrender.com/support"  # Optional
+
+# Assets paths (relative to this file)
+# REQUIRED dimensions:
+#   - icon: 512x512 PNG
+#   - banner: 1200x600 PNG
+#   - screenshots: min 1080px, min 4 required
+assets:
+  icon: "../assets/store/icon-512.png"
+  banner: "../assets/store/banner.png"
+  # feature_graphic: "../assets/store/feature-graphic.png"  # Optional 1200x1200
+  screenshots:
+    - "../assets/screenshots/screen-01.png"
+    - "../assets/screenshots/screen-02.png"
+    - "../assets/screenshots/screen-03.png"
+    - "../assets/screenshots/screen-04.png"
+
+# Localization (optional but recommended)
+i18n:
+  en-US:
+    name: "ASDF"
+    short_description: "Solana wallet integration & DeFi tools for ASDF ecosystem"
+  fr-FR:
+    name: "ASDF"
+    short_description: "Intégration wallet Solana & outils DeFi pour l'écosystème ASDF"
+
+# Solana configuration
+solana:
+  network: "mainnet-beta"
+  rpc_endpoints:
+    - "https://api.mainnet-beta.solana.com"

@@ -1,182 +1,77 @@
 # ASDF Mobile
 
-Application mobile native pour l'écosystème ASDF, construite avec Expo et Solana Mobile.
+Mobile application for the ASDF ecosystem on Solana, built with Expo and Mobile Wallet Adapter.
 
-## Variantes
+## Features
 
-| Variante | Package | Distribution |
-|----------|---------|--------------|
-| **ASDF-Android** | `com.asdf.mobile` | Google Play Store |
-| **ASDF-Dapp** | `com.asdf.mobile` | Solana dApp Store |
+- Secure wallet connection via Mobile Wallet Adapter 2.x
+- SOL balance and SPL token viewing
+- Transaction signing and sending
+- Support for Versioned Transactions
+- Dark/Light theme
 
-## Stack Technique
+## Compatible Wallets
 
-- **Framework**: Expo SDK 50 + React Native 0.73
-- **Langage**: TypeScript (strict mode)
+- Phantom
+- Solflare
+- Ultimate
+- Any MWA-compatible wallet
+
+## Tech Stack
+
+- **Framework**: Expo SDK 54 + React Native 0.81
+- **Language**: TypeScript
 - **Navigation**: React Navigation 6
-- **Solana**: `@solana/web3.js` + Mobile Wallet Adapter
-- **Tests**: Jest + React Native Testing Library
-- **CI/CD**: GitHub Actions + EAS Build
+- **Solana**: `@solana/web3.js` + MWA 2.x
+- **Build**: EAS Build
 
-## Prérequis
-
-- Node.js 20+
-- Yarn
-- Android Studio (pour les builds locaux)
-- Compte Expo (pour EAS Build)
-
-## Installation
+## Getting Started
 
 ```bash
-# Cloner et installer
-git clone <repo>
-cd ASDF-Mobile
+# Install dependencies
 yarn install
 
-# Configurer Expo
-npx expo login
-eas build:configure
-```
-
-## Développement
-
-```bash
-# Démarrer le serveur de développement
+# Start development server
 yarn start
 
-# Lancer sur Android (émulateur ou device)
+# Run on Android
 yarn android
-
-# Lancer sur iOS (macOS uniquement)
-yarn ios
-
-# Lancer sur web
-yarn web
 ```
 
 ## Build
 
-### Preview (test interne)
 ```bash
+# Preview build (APK)
 yarn build:android:preview
-```
 
-### Production (Play Store)
-```bash
+# Production build (AAB for Play Store)
 yarn build:android
-```
 
-### dApp Store
-```bash
+# dApp Store build (APK)
 yarn build:dapp
 ```
 
-## Structure du Projet
+## Project Structure
 
 ```
 src/
-├── App.tsx                 # Point d'entrée
-├── components/
-│   └── ui/                 # Composants réutilisables
-├── constants/
-│   └── config.ts           # Configuration app
+├── App.tsx                 # Entry point
+├── components/ui/          # Reusable components
+├── constants/config.ts     # App configuration
 ├── contexts/
-│   ├── SolanaContext.tsx   # État wallet Solana
-│   └── ThemeContext.tsx    # Thème clair/sombre
-├── hooks/                  # Hooks personnalisés
-├── navigation/             # Configuration navigation
-├── screens/                # Écrans de l'application
-├── services/               # Services API
-├── types/                  # Types TypeScript
-└── utils/                  # Utilitaires
+│   ├── SolanaContext.tsx   # Wallet state & MWA
+│   └── ThemeContext.tsx    # Theme management
+├── navigation/             # Navigation config
+└── screens/                # App screens
 ```
 
-## Mobile Wallet Adapter
+## Security
 
-L'application utilise le protocole MWA pour interagir avec les wallets Solana :
+- Private keys never leave your wallet
+- All signatures via Mobile Wallet Adapter protocol
+- No sensitive data stored in the app
+- Uses `expo-secure-store` for any local storage
 
-```typescript
-import { useSolana } from '@/contexts/SolanaContext';
+## License
 
-function MyComponent() {
-  const { wallet, connect, signTransaction, sendTransaction } = useSolana();
-
-  // Connexion au wallet
-  await connect();
-
-  // Signature d'une transaction
-  const signedTx = await signTransaction(transaction);
-
-  // Envoi d'une transaction
-  const signature = await sendTransaction(transaction);
-}
-```
-
-### Wallets Compatibles
-- Phantom
-- Solflare
-- Ultimate
-- Autres wallets MWA
-
-## Tests
-
-```bash
-# Tests unitaires
-yarn test
-
-# Tests avec couverture
-yarn test --coverage
-
-# Tests E2E (Detox)
-yarn test:e2e
-```
-
-## CI/CD
-
-### GitHub Actions Workflows
-
-| Workflow | Déclencheur | Action |
-|----------|-------------|--------|
-| `ci.yml` | Push/PR | Lint, tests, security scan |
-| `build-android.yml` | Push main | Build Play Store |
-| `build-dapp.yml` | Tag `v*-dapp` | Build + release dApp Store |
-
-### Secrets Requis
-
-- `EXPO_TOKEN`: Token d'accès Expo/EAS
-- `GOOGLE_SERVICES_KEY`: Clé de service Google Play (pour submit)
-
-## Publication
-
-### Google Play Store
-
-1. Build production : `yarn build:android`
-2. Submit automatique via EAS ou manuel via Play Console
-
-### Solana dApp Store
-
-1. Tag une release : `git tag v1.0.0-dapp && git push --tags`
-2. Le workflow génère l'APK et les métadonnées NFT
-3. Soumettre via le [Publisher Portal](https://publisher.solanamobile.com)
-
-## Sécurité
-
-- Les clés privées ne sont JAMAIS exposées à l'application
-- Toutes les signatures passent par le wallet externe via MWA
-- Utilisation de `expo-secure-store` pour les données sensibles
-- Audit de sécurité automatique dans le CI
-
-## Accessibilité
-
-- Labels d'accessibilité sur tous les éléments interactifs
-- Support des lecteurs d'écran
-- Tailles de touch targets minimum 44x44
-- Contraste des couleurs WCAG 2.1 AA
-
-## Migration depuis TWA
-
-L'ancienne application TWA (ASDF-Web-App) peut être dépréciée progressivement :
-
-1. Publier ASDF-Android sur Play Store avec même package ID
-2. Les utilisateurs existants recevront la mise à jour automatique
-3. Maintenir la PWA web pour les utilisateurs non-mobiles
+MIT

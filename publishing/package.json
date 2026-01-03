@@ -1,0 +1,20 @@
+{
+  "name": "asdf-dapp-store-publishing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ASDF dApp Store publishing configuration",
+  "scripts": {
+    "init": "npx dapp-store init",
+    "validate": "npx dapp-store validate",
+    "create:publisher": "npx dapp-store create publisher",
+    "create:app": "npx dapp-store create app",
+    "create:release": "npx dapp-store create release",
+    "submit": "npx dapp-store publish submit --requestor-is-authorized --complies-with-solana-dapp-store-policies"
+  },
+  "devDependencies": {
+    "@solana-mobile/dapp-store-cli": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=21.x"
+  }
+}

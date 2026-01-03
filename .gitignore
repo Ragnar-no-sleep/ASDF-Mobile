@@ -37,6 +37,7 @@ google-services-key.json
 # IDE
 .idea/
 .vscode/
+.claude/
 *.swp
 *.swo
 *~
@@ -66,6 +67,11 @@ build/
 
 # Metro
 .metro-health-check*
+
+# Internal docs
+docs/
+STORE_ASSETS_CHECKLIST.md
+assets/DAPP_STORE_ASSETS.md
 
 # Misc
 *.orig

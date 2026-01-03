@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
-import { PublicKey, Transaction, Connection, clusterApiUrl } from '@solana/web3.js';
+import { PublicKey, Transaction, VersionedTransaction, Connection, clusterApiUrl } from '@solana/web3.js';
 import {
   transact,
   Web3MobileWallet,
-  AuthorizationResult,
 } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import { toByteArray, fromByteArray } from 'base64-js';
 
 import { APP_CONFIG } from '@/constants/config';
 
 // Types
+type SupportedTransaction = Transaction | VersionedTransaction;
+
 interface WalletState {
   publicKey: PublicKey | null;
   authToken: string | null;
@@ -25,11 +25,12 @@ interface SolanaContextType {
 
   // Actions
   connect: () => Promise<void>;
-  disconnect: () => void;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>;
+  disconnect: () => Promise<void>;
+  signTransaction: <T extends SupportedTransaction>(transaction: T) => Promise<T>;
+  signAllTransactions: <T extends SupportedTransaction>(transactions: T[]) => Promise<T[]>;
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
-  sendTransaction: (transaction: Transaction) => Promise<string>;
+  signAndSendTransaction: (transaction: SupportedTransaction) => Promise<string>;
+  sendTransaction: (transaction: SupportedTransaction) => Promise<string>;
 }
 
 const defaultWalletState: WalletState = {
@@ -37,6 +38,13 @@ const defaultWalletState: WalletState = {
   authToken: null,
   walletName: null,
   isConnected: false,
+};
+
+// App identity for MWA
+const APP_IDENTITY = {
+  name: APP_CONFIG.APP_NAME,
+  uri: APP_CONFIG.APP_URI,
+  icon: APP_CONFIG.APP_ICON,
 };
 
 const SolanaContext = createContext<SolanaContextType | undefined>(undefined);
@@ -55,23 +63,17 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
     return new Connection(endpoint, 'confirmed');
   }, []);
 
-  // Connect to wallet via Mobile Wallet Adapter
+  // Connect to wallet via Mobile Wallet Adapter 2.x
   const connect = useCallback(async () => {
     if (isConnecting) return;
 
     setIsConnecting(true);
     try {
       const authResult = await transact(async (mobileWallet: Web3MobileWallet) => {
-        // Authorize with the wallet
         const authorization = await mobileWallet.authorize({
           cluster: APP_CONFIG.SOLANA_NETWORK,
-          identity: {
-            name: APP_CONFIG.APP_NAME,
-            uri: APP_CONFIG.APP_URI,
-            icon: APP_CONFIG.APP_ICON,
-          },
+          identity: APP_IDENTITY,
         });
-
         return authorization;
       });
 
@@ -91,115 +93,140 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
     }
   }, [isConnecting]);
 
-  // Disconnect wallet
-  const disconnect = useCallback(() => {
+  // Disconnect wallet with deauthorize (MWA 2.x)
+  const disconnect = useCallback(async () => {
+    if (wallet.authToken) {
+      try {
+        await transact(async (mobileWallet: Web3MobileWallet) => {
+          await mobileWallet.deauthorize({
+            auth_token: wallet.authToken!,
+          });
+        });
+      } catch (error) {
+        console.warn('Failed to deauthorize:', error);
+      }
+    }
     setWallet(defaultWalletState);
-  }, []);
+  }, [wallet.authToken]);
 
-  // Sign a single transaction
-  const signTransaction = useCallback(
-    async (transaction: Transaction): Promise<Transaction> => {
+  // Helper to reauthorize before operations
+  const withReauthorization = useCallback(
+    async <T,>(operation: (mobileWallet: Web3MobileWallet) => Promise<T>): Promise<T> => {
       if (!wallet.isConnected || !wallet.authToken) {
         throw new Error('Wallet not connected');
       }
 
-      const signedTx = await transact(async (mobileWallet: Web3MobileWallet) => {
-        // Reauthorize if needed
+      return transact(async (mobileWallet: Web3MobileWallet) => {
         await mobileWallet.reauthorize({
           auth_token: wallet.authToken!,
-          identity: {
-            name: APP_CONFIG.APP_NAME,
-            uri: APP_CONFIG.APP_URI,
-            icon: APP_CONFIG.APP_ICON,
-          },
+          identity: APP_IDENTITY,
         });
-
-        const signedTransactions = await mobileWallet.signTransactions({
-          transactions: [transaction],
-        });
-
-        return signedTransactions[0];
+        return operation(mobileWallet);
       });
-
-      return signedTx;
     },
     [wallet]
   );
 
+  // Sign a single transaction (supports VersionedTransaction)
+  const signTransaction = useCallback(
+    async <T extends SupportedTransaction>(transaction: T): Promise<T> => {
+      return withReauthorization(async (mobileWallet) => {
+        const signedTransactions = await mobileWallet.signTransactions({
+          transactions: [transaction],
+        });
+        return signedTransactions[0] as T;
+      });
+    },
+    [withReauthorization]
+  );
+
   // Sign multiple transactions
   const signAllTransactions = useCallback(
-    async (transactions: Transaction[]): Promise<Transaction[]> => {
-      if (!wallet.isConnected || !wallet.authToken) {
-        throw new Error('Wallet not connected');
-      }
-
-      const signedTxs = await transact(async (mobileWallet: Web3MobileWallet) => {
-        await mobileWallet.reauthorize({
-          auth_token: wallet.authToken!,
-          identity: {
-            name: APP_CONFIG.APP_NAME,
-            uri: APP_CONFIG.APP_URI,
-            icon: APP_CONFIG.APP_ICON,
-          },
-        });
-
-        return await mobileWallet.signTransactions({
+    async <T extends SupportedTransaction>(transactions: T[]): Promise<T[]> => {
+      return withReauthorization(async (mobileWallet) => {
+        return (await mobileWallet.signTransactions({
           transactions,
-        });
+        })) as T[];
       });
-
-      return signedTxs;
     },
-    [wallet]
+    [withReauthorization]
   );
 
   // Sign a message
   const signMessage = useCallback(
     async (message: Uint8Array): Promise<Uint8Array> => {
-      if (!wallet.isConnected || !wallet.authToken) {
-        throw new Error('Wallet not connected');
-      }
-
-      const signedMessage = await transact(async (mobileWallet: Web3MobileWallet) => {
-        await mobileWallet.reauthorize({
-          auth_token: wallet.authToken!,
-          identity: {
-            name: APP_CONFIG.APP_NAME,
-            uri: APP_CONFIG.APP_URI,
-            icon: APP_CONFIG.APP_ICON,
-          },
-        });
-
+      return withReauthorization(async (mobileWallet) => {
         const signatures = await mobileWallet.signMessages({
           addresses: [wallet.publicKey!.toBase58()],
           payloads: [message],
         });
-
         return signatures[0];
       });
-
-      return signedMessage;
     },
-    [wallet]
+    [withReauthorization, wallet.publicKey]
   );
 
-  // Send transaction to network
+  // Sign and send transaction in one call (MWA 2.x - more efficient)
+  const signAndSendTransaction = useCallback(
+    async (transaction: SupportedTransaction): Promise<string> => {
+      if (!wallet.isConnected || !wallet.authToken) {
+        throw new Error('Wallet not connected');
+      }
+
+      // Prepare transaction with latest blockhash
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+
+      if (transaction instanceof Transaction) {
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = wallet.publicKey!;
+      }
+
+      const signatures = await transact(async (mobileWallet: Web3MobileWallet) => {
+        await mobileWallet.reauthorize({
+          auth_token: wallet.authToken!,
+          identity: APP_IDENTITY,
+        });
+
+        return await mobileWallet.signAndSendTransactions({
+          transactions: [transaction],
+        });
+      });
+
+      const signature = signatures[0];
+
+      // Confirm transaction
+      await connection.confirmTransaction({
+        signature,
+        blockhash,
+        lastValidBlockHeight,
+      });
+
+      return signature;
+    },
+    [wallet, connection]
+  );
+
+  // Legacy sendTransaction (signs then sends via RPC - fallback)
   const sendTransaction = useCallback(
-    async (transaction: Transaction): Promise<string> => {
+    async (transaction: SupportedTransaction): Promise<string> => {
       if (!wallet.isConnected) {
         throw new Error('Wallet not connected');
       }
 
-      // Get latest blockhash
       const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = wallet.publicKey!;
 
-      // Sign and send
+      if (transaction instanceof Transaction) {
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = wallet.publicKey!;
+      }
+
       const signedTx = await signTransaction(transaction);
-      const signature = await connection.sendRawTransaction(signedTx.serialize());
+      const signature = await connection.sendRawTransaction(
+        signedTx instanceof VersionedTransaction
+          ? signedTx.serialize()
+          : signedTx.serialize()
+      );
 
-      // Confirm transaction
       await connection.confirmTransaction({
         signature,
         blockhash,
@@ -221,6 +248,7 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
       signTransaction,
       signAllTransactions,
       signMessage,
+      signAndSendTransaction,
       sendTransaction,
     }),
     [
@@ -232,6 +260,7 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
       signTransaction,
       signAllTransactions,
       signMessage,
+      signAndSendTransaction,
       sendTransaction,
     ]
   );
