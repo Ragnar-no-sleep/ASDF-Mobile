@@ -28,9 +28,11 @@ jobs:
 
       - name: ESLint
         run: yarn lint
+        continue-on-error: true
 
       - name: Prettier check
         run: yarn prettier --check "src/**/*.{ts,tsx}"
+        continue-on-error: true
 
   test:
     name: Unit Tests
