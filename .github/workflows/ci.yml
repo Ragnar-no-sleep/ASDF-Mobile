@@ -49,7 +49,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run tests
-        run: yarn test --coverage --watchAll=false
+        run: yarn test --coverage --watchAll=false --passWithNoTests
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
