@@ -139,4 +139,4 @@ jobs:
         run: npx expo export --platform web
 
       - name: Verify Android config
-        run: npx expo config --type prebuild --platform android
+        run: npx expo config --type prebuild
